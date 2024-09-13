@@ -1,44 +1,81 @@
-from fastapi import Depends, FastAPI
+from fastapi_users import FastAPIUsers
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI
+from fastapi_users.authentication import (
+    BearerTransport,
+    JWTStrategy,
+    AuthenticationBackend,
+)
+
+from .router import get_apps_router
+
+
 from .models.base_model import Base
 from .config.database.db_helper import db_helper
-from .schemas.user_schema import UserRead, UserCreate
-
-from sqlalchemy.ext.asyncio import AsyncSession
+from .schemas.user_schema import UserRead, UserCreate, UserUpdate
 from .models.user_model import User
-from sqlalchemy.future import select
-from .config.database.db_settings import settings_db
-
-print(settings_db.SQLITE_DB)
+from .config.config import settings
+from .service.user_manager import get_user_manager
 
 app = FastAPI()
+bearer_transport = BearerTransport(tokenUrl="auth/login")
 
 
-async def get_session() -> AsyncSession:
-    async with db_helper.get_db_session() as session:
-        yield session
+def get_jwt_strategy() -> JWTStrategy:
+    return JWTStrategy(secret=settings.SECRET, lifetime_seconds=settings.LIFE_TIME)
+
+
+def get_application() -> FastAPI:
+    application = FastAPI(
+        title=settings.PROJECT_NAME, debug=settings.DEBUG, version=settings.VERSION
+    )
+    application.include_router(get_apps_router())
+
+    application.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    return application
+
+
+app = get_application()
+
+auth_backend = AuthenticationBackend(
+    name="jwt",
+    transport=bearer_transport,
+    get_strategy=get_jwt_strategy,
+)
+
+fastapi_users = FastAPIUsers[User, int](
+    get_user_manager,
+    [auth_backend],
+)
+
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix="/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix="/users",
+    tags=["users"],
+)
 
 
 @app.on_event("startup")
 async def startup():
     async with db_helper.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
-
-@app.post("/users/", response_model=UserRead)
-async def create_user(user: UserCreate, session: AsyncSession = Depends(get_session)):
-    db_user = User(**user.dict())
-    session.add(db_user)
-    await session.commit()
-    await session.refresh(db_user)
-    return db_user
-
-
-@app.get("/users/", response_model=list[UserRead])
-async def read_users(session: AsyncSession = Depends(get_session)):
-    result = await session.execute(select(User))
-    users = result.scalars().all()
-    return users
 
 
 if __name__ == "__main__":
