@@ -1,29 +1,24 @@
+from typing import Optional
 from fastapi_users import FastAPIUsers
-import uvicorn
+from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
-from fastapi_users.authentication import (
-    BearerTransport,
-    JWTStrategy,
-    AuthenticationBackend,
-)
+from fastapi import Depends, FastAPI, HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from .schemas.bib_schema import BibResponse, BibCreate
+from .database.db import get_session
+from .models.bid_model import Bib
 
 from .router import get_apps_router
 
 
 from .models.base_model import Base
 from .config.database.db_helper import db_helper
-from .schemas.user_schema import UserRead, UserCreate, UserUpdate
-from .models.user_model import User
 from .config.config import settings
-from .service.user_manager import get_user_manager
+
 
 app = FastAPI()
-bearer_transport = BearerTransport(tokenUrl="auth/login")
-
-
-def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=settings.SECRET, lifetime_seconds=settings.LIFE_TIME)
 
 
 def get_application() -> FastAPI:
@@ -44,32 +39,8 @@ def get_application() -> FastAPI:
 
 app = get_application()
 
-auth_backend = AuthenticationBackend(
-    name="jwt",
-    transport=bearer_transport,
-    get_strategy=get_jwt_strategy,
-)
 
-fastapi_users = FastAPIUsers[User, int](
-    get_user_manager,
-    [auth_backend],
-)
-
-app.include_router(
-    fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
-    tags=["auth"],
-)
-app.include_router(
-    fastapi_users.get_users_router(UserRead, UserUpdate),
-    prefix="/users",
-    tags=["users"],
-)
+# current_user = fastapi_users.current_user(active=True)
 
 
 @app.on_event("startup")
@@ -78,5 +49,35 @@ async def startup():
         await conn.run_sync(Base.metadata.create_all)
 
 
+# @app.post("/bibs/", response_model=BibResponse)
+# async def create_bib(
+#     bib_data: BibCreate,
+#     user: User = Depends(current_user),
+#     session: AsyncSession = Depends(get_session),
+# ):
+#     bib = Bib(text=bib_data.text, user_id=user.id)
+#     session.add(bib)
+#     try:
+#         await session.commit()
+#         await session.refresh(bib)
+#     except SQLAlchemyError as e:
+#         await session.rollback()
+#         raise HTTPException(status_code=500, detail=str(e))
+#     return bib
+
+
+@app.get("/bibs/", response_model=list[BibResponse])
+async def get_bibs(session: AsyncSession = Depends(get_session)):
+    try:
+        query = select(Bib)
+        result = await session.execute(query)
+        bibs = result.scalars().all()
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    return bibs
+
+
 if __name__ == "__main__":
+    import uvicorn
+
     uvicorn.run("main:app", host="0.0.0.0", reload=True)
