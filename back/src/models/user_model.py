@@ -1,8 +1,10 @@
-from sqlalchemy import String
+from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
+
+
 from .base_model import Base
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import Mapped, relationship
 
 
-class User(Base):
-    name: Mapped[str] = mapped_column(String, index=True)
-    email: Mapped[str] = mapped_column(String, index=True, unique=True)
+class User(SQLAlchemyBaseUserTable[int], Base):
+    __tablename__ = "users"
+    bibs: Mapped[list["Bib"]] = relationship("Bib", back_populates="user")

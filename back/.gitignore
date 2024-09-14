@@ -39,3 +39,4 @@ staticfiles
 celerybeat-schedule
 .vscode
 db.sqlite3
+src/test
