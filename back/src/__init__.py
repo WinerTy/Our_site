@@ -34,3 +34,4 @@ fastapi_users = FastAPIUsers[User, int](
 )
 
 current_user = fastapi_users.current_user(active=True, optional=True)
+admin_user = fastapi_users.current_user(superuser=True)
