@@ -3,6 +3,7 @@ from . import fastapi_users, auth_backend
 from .schemas.user_schema import *
 
 from .app.controllers.public.bibs.bibs_router import router as bib_router
+from .app.controllers.public.service.service_router import router as service_router
 
 
 def get_apps_router():
@@ -23,4 +24,5 @@ def get_apps_router():
         tags=["users"],
     )
     router.include_router(bib_router)
+    router.include_router(service_router)
     return router

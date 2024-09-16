@@ -7,7 +7,6 @@ from fastapi import Depends, FastAPI, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
-from .schemas.bib_schema import BibResponse, BibCreate
 from .database.db import get_session
 from .models.bid_model import Bib
 
@@ -41,24 +40,10 @@ def get_application() -> FastAPI:
 app = get_application()
 
 
-# current_user = fastapi_users.current_user(active=True)
-
-
 @app.on_event("startup")
 async def startup():
     async with db_helper.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
-
-@app.get("/test/", response_model=list[BibResponse])
-async def get_bibs(session: AsyncSession = Depends(get_session)):
-    try:
-        query = select(Bib)
-        result = await session.execute(query)
-        bibs = result.scalars().all()
-    except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    return bibs
 
 
 if __name__ == "__main__":

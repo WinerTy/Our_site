@@ -6,13 +6,7 @@ from src.config.database.db_helper import db_helper
 from ..schemas.bib_schema import *
 
 
-class BibRepository(
-    SqlAlchemyRepository[
-        Bib,
-        BibCreate,
-        BibUpdate,
-    ]
-):
+class BibRepository(SqlAlchemyRepository[Bib, BibCreate, BibUpdate]):
     pass
 
 
