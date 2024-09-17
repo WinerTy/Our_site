@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from . import fastapi_users, auth_backend
 from .schemas.user_schema import *
 
-from .app.controllers.public.bibs.bibs_router import router as bib_router
-from .app.controllers.public.service.service_router import router as service_router
+from .app.controllers.public.bibs_router import router as bib_router
+from .app.controllers.public.service_router import router as service_router
 
 
 def get_apps_router():

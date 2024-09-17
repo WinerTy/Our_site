@@ -14,9 +14,12 @@ class Status(Enum):
 class Bib(Base):
     __tablename__ = "bibs"
 
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+
     user_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id"), nullable=True
     )
     user: Mapped[Optional[User]] = relationship("User", back_populates="bibs")
     text: Mapped[str] = mapped_column(String(length=512))
     email: Mapped[str] = mapped_column(String(length=124))
+    phone: Mapped[Optional[str]] = mapped_column(String(length=20), nullable=True)

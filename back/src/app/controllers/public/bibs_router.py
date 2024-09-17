@@ -14,12 +14,12 @@ router = APIRouter(prefix="/bibs", tags=["bibs"])
 async def create_bib(
     bib_data: BibCreate,
     user: User = Depends(current_user),
-    session: AsyncSession = Depends(get_session),
 ) -> BibResponse:
     data = bib_data.dict()
     if user:
         data["user_id"] = user.id
     bib = await bib_repository.create(data)
+
     return bib
 
 
@@ -28,7 +28,6 @@ async def get_all_bibs(
     order: Annotated[list, Query()] = [],
     limit: int = 100,
     offset: int = 0,
-    db_session: AsyncSession = Depends(get_session),
 ) -> list[BibResponse]:
     bibs = await bib_repository.get_multi(order=order, limit=limit, offset=offset)
     return bibs
