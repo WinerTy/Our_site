@@ -17,17 +17,25 @@ const links = [
     url: '/profile',
   },
 ]
+
+const router = useRoute()
 </script>
 
 <template>
   <div class="header">
     <div class="loog">
-      <h3>Pipao</h3>
+      <h4>Pipao.com</h4>
     </div>
     <div class="links">
-      <router-link v-for="link in links" :key="link.name" class="h5" :to="link.url">
-        {{ link.name }}
-      </router-link>
+      <template v-for="(link, i) in links" :key="i">
+        <router-link
+          :to="link.url"
+          class="h5"
+          :class="{ active: router.path === links[i].url }"
+        >
+          {{ link.name }}
+        </router-link>
+      </template>
     </div>
   </div>
 </template>
@@ -36,12 +44,23 @@ const links = [
 .header {
   display: flex;
   justify-content: space-between;
-  width: 100%;
   align-items: center;
 
   .links {
     display: flex;
     gap: 30px;
+
+    a {
+      transition: color 0.3s ease-in-out;
+
+      &:hover {
+        color: $color-primary;
+      }
+    }
   }
+}
+
+.active {
+  color: $color-acnet;
 }
 </style>
