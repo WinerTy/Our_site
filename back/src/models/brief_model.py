@@ -1,5 +1,7 @@
 from typing import List, Optional
 from sqlalchemy import Column, ForeignKey, Integer, String, Enum, Table
+
+from src.models.user_model import User
 from .base_model import Base
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
@@ -49,3 +51,7 @@ class Brief(Base):
     services: Mapped[List["Service"]] = relationship(
         "Service", secondary="brief_service_association", back_populates="briefs"
     )
+    user_id: Mapped[Optional[int]] = mapped_column(
+        ForeignKey("users.id"), nullable=True
+    )
+    user: Mapped[Optional[User]] = relationship("User", back_populates="briefs")

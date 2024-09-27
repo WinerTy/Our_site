@@ -59,3 +59,44 @@ class SqlAlchemyRepository(
             stmt = select(self.model).order_by(*order).limit(limit).offset(offset)
             row = await session.execute(stmt)
             return row.scalars().all()
+
+    async def create_with_relations(
+        self, data: CreateSchemaType, relations: dict
+    ) -> ModelType:
+        async with self._session_factory() as session:
+            instance = self.model(**data.dict())
+            session.add(instance)
+            await session.flush()
+
+            for relation_name, relation_data in relations.items():
+                relation_model = getattr(instance, relation_name)
+                for item in relation_data:
+                    if isinstance(item, dict):
+                        # Если item - словарь, создаем экземпляр модели
+                        item = self.model(**item)
+                    relation_model.append(item)
+
+            await session.commit()
+            await session.refresh(instance)
+            return instance
+
+    async def update_with_relations(
+        self, data: UpdateSchemaType, relations: dict, **filters
+    ) -> ModelType:
+        async with self._session_factory() as session:
+            instance = await self.get_single(**filters)
+            if not instance:
+                raise ValueError("Instance not found")
+
+            for key, value in data.dict(exclude_unset=True).items():
+                setattr(instance, key, value)
+
+            for relation_name, relation_data in relations.items():
+                relation_model = getattr(instance, relation_name)
+                relation_model.clear()
+                for item in relation_data:
+                    relation_model.append(item)
+
+            await session.commit()
+            await session.refresh(instance)
+            return instance

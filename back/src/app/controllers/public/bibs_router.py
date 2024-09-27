@@ -1,9 +1,8 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.app.schemas.bib_schema import BibResponse, BibCreate
 from src.models.user_model import User
-from src.database.db import get_session
 from src.app.repositories.bibs_repo import bib_repository
 from src import current_user
 

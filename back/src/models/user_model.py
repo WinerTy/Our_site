@@ -10,3 +10,4 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
     bibs: Mapped[list["Bib"]] = relationship("Bib", back_populates="user")
+    briefs: Mapped[list["Brief"]] = relationship("Brief", back_populates="user")

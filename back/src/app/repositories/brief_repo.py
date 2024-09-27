@@ -14,5 +14,6 @@ class BriefRepository(SqlAlchemyRepository[Brief, BriefCreate, BriefUpdate]):
     pass
 
 
-service_repository = ServiceRepository(Service, db_helper.get_db_session)
 brief_repository = BriefRepository(Brief, db_helper.get_db_session)
+
+service_repository = ServiceRepository(Service, db_helper.get_db_session)
