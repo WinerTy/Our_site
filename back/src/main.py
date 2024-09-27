@@ -1,22 +1,12 @@
-from typing import Optional
-from fastapi_users import FastAPIUsers
-from sqlalchemy import select
-from sqlalchemy.exc import SQLAlchemyError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Depends, FastAPI, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import FastAPI
 
-
-from .database.db import get_session
-from .models.bid_model import Bib
 
 from .router import get_apps_router
-
 
 from .models.base_model import Base
 from .config.database.db_helper import db_helper
 from .config.config import settings
-
 
 app = FastAPI()
 
