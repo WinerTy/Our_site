@@ -28,13 +28,12 @@ def get_application() -> FastAPI:
 app = get_application()
 
 
+@app.get("/")
+async def main():
+    return {"message": "DEPLOY!!!!"}
+
+
 @app.on_event("startup")
 async def startup():
     async with db_helper.engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run("main:app", host="0.0.0.0", reload=True)
