@@ -1,12 +1,10 @@
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi import FastAPI
 
-
-from .router import get_apps_router
-
-from .models.base_model import Base
-from .config.database.db_helper import db_helper
-from .config.config import settings
+from src.router import get_apps_router
+from src.config.site.settings import settings
+from src.config.database.helper import db_helper
+from src.models.base import Base
 
 app = FastAPI()
 
