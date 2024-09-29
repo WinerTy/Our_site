@@ -14,7 +14,7 @@ from src.models.user_model import User
 
 from src.api.repository.note_repo import note_repository
 from src.api.repository.user_repo import user_repository
-from src.schemas.user_schemas import UserRead
+
 
 router = APIRouter(prefix="/note", tags=["Notes"])
 

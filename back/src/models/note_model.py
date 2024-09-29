@@ -1,5 +1,4 @@
 from typing import Optional
-from pydantic import EmailStr
 from sqlalchemy import ForeignKey, String
 from .base import Base
 from sqlalchemy.orm import Mapped, relationship, mapped_column

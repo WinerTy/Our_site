@@ -17,7 +17,6 @@ class NoteCreate(BaseModel):
             data["user_id"] = user.id
         else:
             data["user_id"] = None
-        print(data)
         return cls(**data)
 
     @field_validator("text")
