@@ -1,10 +1,12 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.router import get_apps_router
-from src.config.site.settings import settings
-from src.config.database.helper import db_helper
-from src.models.base import Base
+from .router import get_apps_router
+from .config.site.settings import settings
+from .config.database.helper import db_helper
+from .models.base import Base
 
 app = FastAPI()
 

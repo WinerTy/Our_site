@@ -11,9 +11,9 @@ from fastapi_users.authentication import (
     JWTStrategy,
     AuthenticationBackend,
 )
-from src.config.database.helper import db_helper
-from src.config.site.settings import settings
-from src.models.user_model import User
+from .config.database.helper import db_helper
+from .config.site.settings import settings
+from .models.user_model import User
 
 
 async def get_session() -> AsyncSession:
