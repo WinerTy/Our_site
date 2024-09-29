@@ -38,5 +38,4 @@ staticfiles
 .flake8
 celerybeat-schedule
 .vscode
-db.sqlite3
-src/test
+test
