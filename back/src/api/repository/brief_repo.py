@@ -5,7 +5,11 @@ from sqlalchemy import select
 from src.schemas.brief_schemas import BriefCreate
 from .base import BaseRepository
 from src.models.service_model import Service
-from src.models.brief_model import Brief, BriefServiceAssociation
+from src.models.brief_model import (
+    Brief,
+    BriefServiceAssociation,
+    BriefSiteTypeAssociation,
+)
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import joinedload, selectinload
@@ -19,7 +23,9 @@ class BriefRepository(BaseRepository):
         try:
             query = (
                 select(self.model)
-                .options(joinedload(self.model.services))
+                .options(
+                    joinedload(self.model.services), joinedload(self.model.site_types)
+                )
                 .where(self.model.id == id)
             )
             result = await db.execute(query)
@@ -43,7 +49,10 @@ class BriefRepository(BaseRepository):
         try:
             query = (
                 select(self.model)
-                .options(selectinload(self.model.services))
+                .options(
+                    selectinload(self.model.services),
+                    selectinload(self.model.site_types),
+                )
                 .offset(skip)
                 .limit(limit)
             )
@@ -64,15 +73,21 @@ class BriefRepository(BaseRepository):
             )
 
     async def create(self, db: AsyncSession, obj_in: BriefCreate) -> Brief:
-        db_obj = Brief(**obj_in.model_dump(exclude={"services"}))
+        db_obj = Brief(**obj_in.model_dump(exclude={"services", "site_types"}))
         db.add(db_obj)
         await db.flush()
 
         for service_id in obj_in.services:
-            association = BriefServiceAssociation(
+            service_association = BriefServiceAssociation(
                 brief_id=db_obj.id, service_id=service_id
             )
-            db.add(association)
+            db.add(service_association)
+
+        for site_type_id in obj_in.site_types:
+            site_type_association = BriefSiteTypeAssociation(
+                brief_id=db_obj.id, site_type_id=site_type_id
+            )
+            db.add(site_type_association)
 
         await db.commit()
         await db.refresh(db_obj)
