@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr, field_validator
 
 from typing import Optional
 
-from src.models.user_model import User
+from src.models.users.user_model import User
 from src.schemas.user_schemas import UserRead
 
 

@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.dependencies import current_user, get_session
+from src.models.users.user_model import User
 from src.schemas.brief_schemas import BriefCreate, BriefList, BriefResponse
 from src.api.repository.brief_repo import brief_repository
 from src.api.repository.service_repo import service_repository
@@ -14,6 +15,7 @@ router = APIRouter(prefix="/brief", tags=["Briefs"])
 @router.post("/", response_model=BriefResponse)
 async def create_brief(
     brief_data: BriefCreate,
+    user: User = Depends(current_user),
     session: AsyncSession = Depends(get_session),
 ):
     for service_id in brief_data.services:
@@ -26,6 +28,7 @@ async def create_brief(
         if not site_type:
             raise HTTPException(status_code=404, detail="SiteType not found")
 
+    brief_data = BriefCreate.from_request(brief_data.model_dump(), user)
     brief = await brief_repository.create(session, brief_data)
     return BriefResponse(id=brief.id, detail="Succses")
 

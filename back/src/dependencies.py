@@ -13,7 +13,7 @@ from fastapi_users.authentication import (
 )
 from src.config.database.helper import db_helper
 from src.config.site.settings import settings
-from src.models.user_model import User
+from src.models.users.user_model import User
 
 
 async def get_session() -> AsyncSession:

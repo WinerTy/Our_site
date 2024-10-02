@@ -10,7 +10,7 @@ from src.schemas.note_schemas import (
     NoteResponses,
 )
 from src.dependencies import current_user, get_session
-from src.models.user_model import User
+from src.models.users.user_model import User
 
 from src.api.repository.note_repo import note_repository
 from src.api.repository.user_repo import user_repository

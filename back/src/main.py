@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.router import get_apps_router
 from src.config.site.settings import settings
 from src.config.database.helper import db_helper
-from src.models.base import Base
+from src.models.base.base import Base
 
 app = FastAPI()
 

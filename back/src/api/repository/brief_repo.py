@@ -4,8 +4,8 @@ from sqlalchemy import select
 
 from src.schemas.brief_schemas import BriefCreate
 from .base import BaseRepository
-from src.models.service_model import Service
-from src.models.brief_model import (
+from src.models.services.service_model import Service
+from src.models.brief.brief_model import (
     Brief,
     BriefServiceAssociation,
     BriefSiteTypeAssociation,

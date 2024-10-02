@@ -1,7 +1,7 @@
 from typing import Type, TypeVar, List, Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.models.base import Base
+from src.models.base.base import Base
 from pydantic import BaseModel
 
 ModelType = TypeVar("ModelType", bound=Base)

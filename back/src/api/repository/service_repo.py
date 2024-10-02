@@ -1,5 +1,5 @@
 from .base import BaseRepository
-from src.models.service_model import Service
+from src.models.services.service_model import Service
 
 
 class ServiceRepository(BaseRepository):

@@ -1,1 +1,1 @@
-from src.models.base import Base
+from src.models.base.base import Base
