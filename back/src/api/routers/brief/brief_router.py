@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.dependencies import current_user, get_session
 from src.models.user import User
-from src.schemas.brief import BriefCreate, BriefList, BriefResponse, BriefUpdate
+from src.schemas.base import BaseResponse
+from src.schemas.brief import BriefCreate, BriefRead, BriefUpdate
 from src.api.repository.brief import brief_repository
 from src.api.repository.service import service_repository
 from src.api.repository.additional_service import additional_repo
@@ -26,7 +27,7 @@ async def check_services_exist(
             await additional_repo.get_by_id(session, additional_id)
 
 
-@router.post("/", response_model=BriefResponse)
+@router.post("/", response_model=BaseResponse)
 async def create_brief(
     brief_data: BriefCreate,
     user: User = Depends(current_user),
@@ -40,10 +41,10 @@ async def create_brief(
 
     brief_data = BriefCreate.from_request(brief_data.model_dump(), user)
     brief = await brief_repository.create(session, brief_data)
-    return BriefResponse(id=brief.id, detail="Succses")
+    return BaseResponse(id=brief.id, detail="Succses")
 
 
-@router.get("/", response_model=List[BriefList])
+@router.get("/", response_model=List[BriefRead])
 async def briefs_list(
     skip: int = 0,
     limit: int = 100,
@@ -63,7 +64,7 @@ async def briefs_list(
     return briefs
 
 
-@router.get("/{brief_id}", response_model=BriefList)
+@router.get("/{brief_id}", response_model=BriefRead)
 async def detail_brief(brief_id: int, session: AsyncSession = Depends(get_session)):
     brief = await brief_repository.get_by_id(
         session,
@@ -74,7 +75,7 @@ async def detail_brief(brief_id: int, session: AsyncSession = Depends(get_sessio
     return brief
 
 
-@router.put("/{brief_id}", response_model=BriefResponse)
+@router.put("/{brief_id}", response_model=BaseResponse)
 async def update_brief(
     brief_id: int,
     update_data: BriefUpdate,
@@ -93,4 +94,4 @@ async def update_brief(
     )
     update_data = BriefUpdate.from_request(update_data.model_dump(), user)
     updated_brief = await brief_repository.update(session, brief, update_data)
-    return BriefResponse(id=updated_brief.id, detail="Update succses")
+    return BaseResponse(id=updated_brief.id, detail="Update succses")

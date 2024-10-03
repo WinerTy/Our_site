@@ -12,7 +12,7 @@ from src.models.brief.brief_model import (
     BriefServiceAssociation,
 )
 from src.models.services.service_model import Service
-from src.schemas.brief import BriefList, BriefCreate
+from src.schemas.brief import BriefRead, BriefCreate
 from src.schemas.brief.brief_schemas import BriefUpdate
 
 
@@ -53,7 +53,7 @@ class BriefRepository(BaseRepository):
         limit: int = 100,
         filters: Optional[dict] = None,
         load_relations: Optional[List[str]] = None,
-    ) -> List[BriefList]:
+    ) -> List[BriefRead]:
         query = select(self.model).offset(skip).limit(limit)
 
         if filters:

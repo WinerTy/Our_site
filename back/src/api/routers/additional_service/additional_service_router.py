@@ -5,9 +5,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.schemas.additional_service import (
     AdditionalServiceCreate,
-    AdditionalServiceResponse,
-    AdditionalServiceList,
+    AdditionalServiceRead,
 )
+from src.schemas.base import BaseResponse
 from src.dependencies import get_session
 
 
@@ -18,7 +18,7 @@ from src.api.repository.tag import tag_repository
 router = APIRouter(prefix="/additional_service", tags=["Additional Service"])
 
 
-@router.post("/", response_model=AdditionalServiceResponse)
+@router.post("/", response_model=BaseResponse)
 async def create_additional_service(
     additional_data: AdditionalServiceCreate,
     session: AsyncSession = Depends(get_session),
@@ -26,17 +26,18 @@ async def create_additional_service(
     if additional_data.tag_id:
         await tag_repository.get_by_id(session, id=additional_data.tag_id)
     additional_service = await additional_repo.create(session, additional_data)
-    return AdditionalServiceResponse(id=additional_service.id, detail="Succses")
+    return BaseResponse(id=additional_service.id, detail="Succses")
 
 
-@router.get("/", response_model=List[AdditionalServiceList])
+@router.get("/", response_model=List[AdditionalServiceRead])
 async def additional_service_list(
     skip: int = 0,
     limit: int = 100,
     tag_id: Optional[int] = None,
+    is_active: bool = True,
     session: AsyncSession = Depends(get_session),
 ):
-    filters = {}
+    filters = {"is_active": is_active}
     if tag_id:
         filters["tag_id"] = tag_id
     additional_services = await additional_repo.get_multi(

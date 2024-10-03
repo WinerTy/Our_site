@@ -1,33 +1,47 @@
 import re
-from pydantic import BaseModel, EmailStr, field_validator, Field
+from pydantic import BaseModel, EmailStr, field_validator, Field, HttpUrl
 from typing import Optional, List
 
 from src.models.user import User
-from src.schemas.services.service_schemas import ServiceList
-
-from src.schemas.user.user_schemas import UserRead
-from src.schemas.additional_service import AdditionalServiceList
 
 
 class BriefServices(BaseModel):
-    services: Optional[List[int]] = Field(None, example=[1, 2, 3])
-    additional_services: Optional[List[int]] = Field(None, example=[1, 2, 3, 4])
+    services: Optional[List[int]] = Field(
+        None, title="Массив id услуг", example=[1, 2, 3]
+    )
+    additional_services: Optional[List[int]] = Field(
+        None, title="Массив id доп.услуг", example=[1, 2, 3, 4, 5]
+    )
 
 
 class BriefBase(BaseModel):
-    company_did: Optional[str] = Field(None, example="company123")
-    concompetitors: Optional[str] = Field(None, example="Competitor A, Competitor B")
-    additional_comment: Optional[str] = Field(None, example="Some additional comment")
-    budget: str = Field("1000", example="1000")
-    client_name: str = Field("John Doe", example="John Doe")
-    client_phone: str = Field("+1 (123) 456-78-90", example="+1 (123) 456-78-90")
-    client_email: EmailStr = Field(
-        "john.doe@example.com", example="john.doe@example.com"
+    company_did: Optional[str] = Field(
+        None, title="Занятость компании", example="company123"
     )
-    client_task: str = Field("Create a website", example="Create a website")
-    client_company: Optional[str] = Field(None, example="Example Company")
-    client_site: Optional[str] = Field(None, example="https://example.com")
-    user_id: Optional[int] = Field(None, example=1)
+    concompetitors: Optional[str] = Field(
+        None, title="Конкуренты", example="Competitor A, Competitor B"
+    )
+    additional_comment: Optional[str] = Field(
+        None, title="Дополньтельная информация", example="Some additional comment"
+    )
+    budget: str = Field("1000", title="Бюджет", example="1000")
+    client_name: str = Field("John Doe", title="Имя клиента", example="John Doe")
+    client_phone: str = Field(
+        "+1 (123) 456-78-90", title="Номер клиента", example="+1 (123) 456-78-90"
+    )
+    client_email: EmailStr = Field(
+        "john.doe@example.com", title="Почта клиента", example="john.doe@example.com"
+    )
+    client_task: str = Field(
+        "Create a website", title="Задача клиента", example="Create a website"
+    )
+    client_company: Optional[str] = Field(
+        None, title="Компания клиента", example="Example Company"
+    )
+    client_site: Optional[HttpUrl] = Field(
+        None, title="Сайт клиента", example="https://example.com"
+    )
+    user_id: Optional[int] = Field(None, title="id Пользователя", example=1)
 
     @classmethod
     def from_request(cls, data: dict, user: User):
@@ -73,10 +87,5 @@ class BriefCreate(BriefServices, BriefBase):
     pass
 
 
-class BriefList(BriefServices, BriefBase):
-    id: int = Field("1", example="1")
-
-
-class BriefResponse(BaseModel):
-    id: int = Field("1", example="1")
-    detail: str
+class BriefRead(BriefServices, BriefBase):
+    id: int = Field("1", title="id Брифа", example="1")

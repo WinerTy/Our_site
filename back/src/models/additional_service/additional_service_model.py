@@ -18,3 +18,4 @@ class AdditionalService(Base):
         secondary="brief_additional_service_association",
         back_populates="additional_services",
     )
+    is_active: Mapped[bool] = mapped_column(default=True)
