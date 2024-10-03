@@ -13,3 +13,8 @@ class AdditionalService(Base):
     tag: Mapped[Optional["Tag"]] = relationship(
         "Tag", back_populates="additional_services"
     )
+    briefs: Mapped[List["Brief"]] = relationship(
+        "Brief",
+        secondary="brief_additional_service_association",
+        back_populates="additional_services",
+    )

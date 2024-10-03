@@ -16,8 +16,13 @@ class BaseRepository:
     def __init__(self, model: Type[ModelType]):
         self.model = model
 
-    async def get_by_id(self, db: AsyncSession, id: int) -> Optional[ModelType]:
+    async def get_by_id(
+        self, db: AsyncSession, id: int, load_relations: Optional[List[str]] = None
+    ) -> Optional[ModelType]:
         query = select(self.model).where(self.model.id == id)
+        if load_relations:
+            for relation in load_relations:
+                query = query.options(selectinload(getattr(self.model, relation)))
         result = await db.execute(query)
         obj = result.scalars().first()
         if not obj:

@@ -11,6 +11,14 @@ class BriefServiceAssociation(Base):
     service_id: Mapped[int] = mapped_column(ForeignKey("services.id"), primary_key=True)
 
 
+class BriefAdditionalServiceAssociation(Base):
+    __tablename__ = "brief_additional_service_association"
+    brief_id: Mapped[int] = mapped_column(ForeignKey("briefs.id"), primary_key=True)
+    additional_service_id: Mapped[int] = mapped_column(
+        ForeignKey("additional_services.id"), primary_key=True
+    )
+
+
 class Brief(Base):
     __tablename__ = "briefs"
     id: Mapped[int] = mapped_column(primary_key=True, index=True)
@@ -32,7 +40,11 @@ class Brief(Base):
     services: Mapped[List["Service"]] = relationship(
         "Service", secondary="brief_service_association", back_populates="briefs"
     )
-
+    additional_services: Mapped[List["AdditionalService"]] = relationship(
+        "AdditionalService",
+        secondary="brief_additional_service_association",
+        back_populates="briefs",
+    )
     user_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id"), nullable=True
     )
