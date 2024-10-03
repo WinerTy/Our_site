@@ -1,18 +1,25 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, field_validator
 
 
-class TagCreate(BaseModel):
-    name: str
+class TagBase(BaseModel):
+    name: str = Field("Sites", title="Название Тэга", example="Sites")
+
+    @field_validator("name")
+    def validate_text(cls, v):
+        if not v:
+            raise ValueError("Field cannot be empty")
+        if len(v) > 124:
+            raise ValueError("Field so long, max size 512")
+        return v
 
 
-class TagUpdate(BaseModel):
-    name: str
+class TagCreate(TagBase):
+    pass
 
 
-class TagList(BaseModel):
+class TagUpdate(TagBase):
+    pass
+
+
+class TagRead(TagBase):
     id: int
-
-
-class TagResponse(BaseModel):
-    id: int
-    detail: str

@@ -3,12 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.schemas.note.note_schemas import (
-    NoteResponse,
-    NoteCreate,
-    NoteDetailResponse,
-    NoteResponses,
-)
+from src.schemas.note.note_schemas import NoteCreate, NoteRead
+from src.schemas.base import BaseResponse
 from src.dependencies import current_user, get_session
 from src.models.user import User
 
@@ -19,7 +15,7 @@ from src.api.repository.user import user_repository
 router = APIRouter(prefix="/note", tags=["Notes"])
 
 
-@router.post("/", response_model=NoteResponse)
+@router.post("/", response_model=BaseResponse)
 async def create_note(
     note_data: NoteCreate,
     user: User = Depends(current_user),
@@ -27,10 +23,10 @@ async def create_note(
 ):
     note_data = NoteCreate.from_request(note_data.model_dump(), user)
     note = await note_repository.create(session, note_data)
-    return NoteResponse(id=note.id, detail="succses")
+    return BaseResponse(id=note.id, detail="succses")
 
 
-@router.get("/", response_model=List[NoteResponses])
+@router.get("/", response_model=List[NoteRead])
 async def get_notes(
     skip: int = 0,
     limit: int = 100,
@@ -49,7 +45,7 @@ async def get_notes(
     return notes
 
 
-@router.get("/{note_id}", response_model=NoteDetailResponse)
+@router.get("/{note_id}", response_model=NoteRead)
 async def detail_note(
     note_id: int,
     session: AsyncSession = Depends(get_session),
