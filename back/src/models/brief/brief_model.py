@@ -27,6 +27,7 @@ class Brief(Base):
     )
     concompetitors: Mapped[Optional[str]] = mapped_column(String, nullable=True)
     additional_comment: Mapped[Optional[str]] = mapped_column(String, nullable=True)
+    budget: Mapped[str] = mapped_column(String(length=124), nullable=False)
     client_name: Mapped[str] = mapped_column(String(length=124), nullable=False)
     client_phone: Mapped[str] = mapped_column(String(length=20), nullable=False)
     client_email: Mapped[str] = mapped_column(String(length=124), nullable=False)
