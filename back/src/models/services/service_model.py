@@ -1,5 +1,5 @@
-from typing import List
-from sqlalchemy import String
+from typing import List, Optional
+from sqlalchemy import String, ForeignKey
 from src.models.base.base import Base
 
 from sqlalchemy.orm import Mapped, relationship, mapped_column
@@ -13,3 +13,5 @@ class Service(Base):
     briefs: Mapped[List["Brief"]] = relationship(
         "Brief", secondary="brief_service_association", back_populates="services"
     )
+    tag_id: Mapped[Optional[int]] = mapped_column(ForeignKey("tags.id"), nullable=True)
+    tag: Mapped[Optional["Tag"]] = relationship("Tag", back_populates="services")

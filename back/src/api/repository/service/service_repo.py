@@ -1,4 +1,4 @@
-from .base import BaseRepository
+from ..base.base import BaseRepository
 from src.models.services.service_model import Service
 
 

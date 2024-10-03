@@ -3,17 +3,17 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.schemas.note_schemas import (
+from src.schemas.note.note_schemas import (
     NoteResponse,
     NoteCreate,
     NoteDetailResponse,
     NoteResponses,
 )
 from src.dependencies import current_user, get_session
-from src.models.users.user_model import User
+from src.models.user import User
 
-from src.api.repository.note_repo import note_repository
-from src.api.repository.user_repo import user_repository
+from src.api.repository.note import note_repository
+from src.api.repository.user import user_repository
 
 
 router = APIRouter(prefix="/note", tags=["Notes"])
@@ -54,11 +54,11 @@ async def detail_note(
     note_id: int,
     session: AsyncSession = Depends(get_session),
 ):
-    note = await note_repository.get(session, id=note_id)
+    note = await note_repository.get_by_id(session, id=note_id)
 
     if not note:
         raise HTTPException(status_code=404, detail="Note not found")
 
-    user = await user_repository.get(session, id=note.user_id)
+    user = await user_repository.get_by_id(session, id=note.user_id)
     note.user = user
     return note

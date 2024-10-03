@@ -1,10 +1,10 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 
-from src.models.users.user_model import User
-from src.schemas.service_schemas import ServiceList
-from src.schemas.site_type_schemas import SiteTypeList
-from src.schemas.user_schemas import UserRead
+from src.models.user import User
+from src.schemas.services.service_schemas import ServiceList
+
+from src.schemas.user.user_schemas import UserRead
 
 
 class BriefUpdate(BaseModel):
@@ -32,7 +32,6 @@ class BriefCreate(BaseModel):
     client_company: Optional[str]
     client_site: Optional[str]
     services: List[int] = []
-    site_types: List[int] = []
     user_id: Optional[int] = None
 
     @classmethod
@@ -56,7 +55,6 @@ class BriefList(BaseModel):
     client_company: Optional[str]
     client_site: Optional[str]
     services: List[ServiceList] = []
-    site_types: List[SiteTypeList] = []
     user_id: Optional[int] = None
 
 

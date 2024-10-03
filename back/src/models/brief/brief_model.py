@@ -1,6 +1,6 @@
 from typing import List, Optional
 from sqlalchemy import ForeignKey, String
-from src.models.base.base import Base
+from src.models.base import Base
 
 from sqlalchemy.orm import Mapped, relationship, mapped_column
 
@@ -9,14 +9,6 @@ class BriefServiceAssociation(Base):
     __tablename__ = "brief_service_association"
     brief_id: Mapped[int] = mapped_column(ForeignKey("briefs.id"), primary_key=True)
     service_id: Mapped[int] = mapped_column(ForeignKey("services.id"), primary_key=True)
-
-
-class BriefSiteTypeAssociation(Base):
-    __tablename__ = "brief_site_types_association"
-    brief_id: Mapped[int] = mapped_column(ForeignKey("briefs.id"), primary_key=True)
-    site_type_id: Mapped[int] = mapped_column(
-        ForeignKey("site_types.id"), primary_key=True
-    )
 
 
 class Brief(Base):
@@ -40,9 +32,7 @@ class Brief(Base):
     services: Mapped[List["Service"]] = relationship(
         "Service", secondary="brief_service_association", back_populates="briefs"
     )
-    site_types: Mapped[List["SiteType"]] = relationship(
-        "SiteType", secondary="brief_site_types_association", back_populates="briefs"
-    )
+
     user_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("users.id"), nullable=True
     )

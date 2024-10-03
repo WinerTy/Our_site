@@ -2,8 +2,8 @@ from pydantic import BaseModel, EmailStr, field_validator
 
 from typing import Optional
 
-from src.models.users.user_model import User
-from src.schemas.user_schemas import UserRead
+from src.models.user import User
+from src.schemas.user.user_schemas import UserRead
 
 
 class NoteCreate(BaseModel):

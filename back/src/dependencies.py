@@ -1,19 +1,20 @@
-from fastapi import Depends
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Request, Depends
-from typing import Optional
-from fastapi_users import BaseUserManager, IntegerIDMixin
 
+from typing import Optional
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
+from fastapi_users import BaseUserManager, IntegerIDMixin
 from fastapi_users import FastAPIUsers
 from fastapi_users.authentication import (
     BearerTransport,
     JWTStrategy,
     AuthenticationBackend,
 )
+
 from src.config.database.helper import db_helper
 from src.config.site.settings import settings
-from src.models.users.user_model import User
+from src.models.user import User
 
 
 async def get_session() -> AsyncSession:

@@ -1,4 +1,4 @@
-from .base import BaseRepository
+from ..base.base import BaseRepository
 from src.models.note.note_model import Note
 
 
