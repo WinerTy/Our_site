@@ -11,7 +11,6 @@ class TagUpdate(BaseModel):
 
 class TagList(BaseModel):
     id: int
-    name: str
 
 
 class TagResponse(BaseModel):

@@ -1,6 +1,7 @@
 from typing import Type, TypeVar, List, Optional
 from fastapi import HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.models.base.base import Base
@@ -31,12 +32,17 @@ class BaseRepository:
         skip: int = 0,
         limit: int = 100,
         filters: Optional[dict] = None,
+        load_relations: Optional[List[str]] = None,
     ) -> List[ModelType]:
         query = select(self.model).offset(skip).limit(limit)
 
         if filters:
             for key, value in filters.items():
                 query = query.filter(getattr(self.model, key) == value)
+
+        if load_relations:
+            for relation in load_relations:
+                query = query.options(selectinload(getattr(self.model, relation)))
 
         result = await db.execute(query)
         return result.scalars().all()
