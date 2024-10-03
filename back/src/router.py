@@ -1,10 +1,12 @@
 from fastapi import APIRouter
-from .api.routers.note_router import router as note_router
-from .api.routers.service_router import router as service_router
-from .api.routers.brief_router import router as brief_router
 
-from .dependencies import fastapi_users, auth_backend
-from .schemas.user_schemas import UserRead, UserCreate, UserUpdate
+from src.api.routers.note import note_router
+from src.api.routers.service import service_router
+from src.api.routers.brief import brief_router
+from src.api.routers.tag import tag_router
+from src.api.routers.additional_service import additional_router
+from src.dependencies import fastapi_users, auth_backend
+from src.schemas.user import UserRead, UserCreate, UserUpdate
 
 
 def get_apps_router():
@@ -27,4 +29,6 @@ def get_apps_router():
     router.include_router(note_router)
     router.include_router(service_router)
     router.include_router(brief_router)
+    router.include_router(tag_router)
+    router.include_router(additional_router)
     return router
