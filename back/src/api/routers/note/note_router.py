@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.schemas.note.note_schemas import NoteCreate, NoteRead
 from src.schemas.base import BaseResponse
-from src.dependencies import current_user, get_session
+from src.dependencies.auth_depend import current_user, get_session
 from src.models.user import User
 
 from src.api.repository.note import note_repository

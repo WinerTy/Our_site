@@ -8,7 +8,7 @@ from src.schemas.additional_service import (
     AdditionalServiceRead,
 )
 from src.schemas.base import BaseResponse
-from src.dependencies import get_session
+from src.dependencies.auth_depend import get_session
 
 
 from src.api.repository.additional_service import additional_repo

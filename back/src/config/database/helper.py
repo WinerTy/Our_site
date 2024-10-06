@@ -1,12 +1,16 @@
 from asyncio import current_task
 from contextlib import asynccontextmanager
+from typing import List
 
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     create_async_engine,
     async_sessionmaker,
     async_scoped_session,
 )
+
+from src.models.base.base import Base
 
 from .settings import settings_db
 

@@ -1,5 +1,10 @@
 from pydantic_settings import BaseSettings
 
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
 
 class SiteSettings(BaseSettings):
     PROJECT_NAME: str
@@ -8,7 +13,7 @@ class SiteSettings(BaseSettings):
     CORS_ALLOWED_ORIGINS: str
 
     SECRET: str
-    LIFE_TIME: int
+    LIFE_DAYS: int
 
 
 settings = SiteSettings()
