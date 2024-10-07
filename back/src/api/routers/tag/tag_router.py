@@ -1,10 +1,14 @@
+from typing import Dict
 from fastapi import APIRouter, Depends, HTTPException
 
+from sqlalchemy import MetaData, inspect
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.dependencies import get_session
+from src.dependencies.auth_depend import get_session
+from src.models.base.base import Base
 from src.schemas.tag import TagCreate, TagRead, TagUpdate
 from src.schemas.base import BaseResponse
 from src.api.repository.tag import tag_repository
+from src.config.database.helper import db_helper
 
 router = APIRouter(prefix="/tag", tags=["Tags"])
 
@@ -38,3 +42,5 @@ async def update_tag(
 async def delete_tag(tag_id: int, session: AsyncSession = Depends(get_session)):
     delete_tag = await tag_repository.delete(session, id=tag_id)
     return BaseResponse(id=delete_tag.id, detail="Delete succses")
+
+

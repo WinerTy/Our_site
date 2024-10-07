@@ -38,7 +38,7 @@ class NoteBase(BaseModel):
 
 
 class NoteCreate(NoteBase):
-    user_id: Optional[int] = Field(None, title="id Пользователя", example=None)
+    pass
 
 
 class NoteUpdate(NoteBase):

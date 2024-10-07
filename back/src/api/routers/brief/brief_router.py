@@ -2,7 +2,7 @@ from typing import List, Optional
 from fastapi import APIRouter, Depends, HTTPException
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.dependencies import current_user, get_session
+from src.dependencies.auth_depend import current_user, get_session
 from src.models.user import User
 from src.schemas.base import BaseResponse
 from src.schemas.brief import BriefCreate, BriefRead, BriefUpdate
