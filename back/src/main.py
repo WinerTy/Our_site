@@ -49,10 +49,11 @@ admin = Admin(
     title="SITE PROTOTYPE",
     # base_url="/admin",
     # route_name="admin",
-    # statics_dir="static/admin",
-    # templates_dir="templates/admin",
+    statics_dir="src/starlette_admin/statics/",
+    templates_dir="src/starlette_admin/templates",
     # auth_provider=MyAuthProvider(),
     i18n_config=I18nConfig(default_locale="ru", language_switcher=["ru", "en"]),
+    debug=True,
 )
 
 admin.add_view(ModelView(User))
